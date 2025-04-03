@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "a1cc9fd3-043f-4a31-b47f-a34c19210558",
+		"name": "File Multithreading Problem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5493727"
+	},
+	"item": [
+		{
+			"name": "Загрузка файла с email-ами",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Users/Knd-a-aaosetskiy/Study/StackOverflow/git/FileMultithreadingProblem/postman/test_emails_1.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/upload-from-files?type=xlsx",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"upload-from-files"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "xlsx"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -45,7 +45,7 @@ public class FileService {
             }
 
         }, Executors.newSingleThreadExecutor()).exceptionally((e) -> {
-            log.error("Ошибка парсинга значений из файла(ов)" + e);
+            log.error("Ошибка парсинга значений из файла(ов)", e);
             return null;
         });
         filesDtoFromFile.thenRun(() -> log.info("Чтение данных из файла(ов) завершено"));

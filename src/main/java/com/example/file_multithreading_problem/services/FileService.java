@@ -27,23 +27,23 @@ public class FileService {
     public void parseValuesFromFileToDTO(List<MultipartFile> files) {
         CompletableFuture<Void> filesDtoFromFile = CompletableFuture.runAsync(() ->
         {
-            Set<String> emailsFromFile = new HashSet<>();
             for(MultipartFile file : files) {
                 final Integer cellIndex = 0;
                 final Integer sheetIndex = 0;
                 final Integer limitValues = 100;
                 try {
-                    emailsFromFile.addAll(parseCellValueByCellIndexAndSheetIndexWithLimitValues(cellIndex,
+                    Set<String> emailsFromFile = parseCellValueByCellIndexAndSheetIndexWithLimitValues(cellIndex,
                             sheetIndex,
                             limitValues,
-                            file.getBytes()));
+                            file.getBytes());
+                    for (String email:emailsFromFile) {
+                        log.info(email);
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-            for (String email:emailsFromFile) {
-                log.info(email);
-            }
+
         }, Executors.newSingleThreadExecutor()).exceptionally((e) -> {
             log.error("Ошибка парсинга значений из файла(ов)" + e);
             return null;

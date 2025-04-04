@@ -33,10 +33,10 @@ public class FileService {
                 final Integer sheetIndex = 0;
                 final Integer limitValues = 100;
                 try {
-                    emailsFromFile = parseCellValueByCellIndexAndSheetIndexWithLimitValues(cellIndex,
+                    emailsFromFile.addAll(parseCellValueByCellIndexAndSheetIndexWithLimitValues(cellIndex,
                             sheetIndex,
                             limitValues,
-                            file.getBytes());
+                            file.getBytes()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

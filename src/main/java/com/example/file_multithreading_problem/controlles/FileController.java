@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping
@@ -25,8 +26,8 @@ public class FileController {
     }
 
     @PostMapping(value = "/upload-from-files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> saveFromFiles(@RequestPart(value = "files", required = false) List<MultipartFile> files) {
-        fileService.parseValuesFromFileToDTO(files);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public CompletableFuture<ResponseEntity<Void>> saveFromFiles(@RequestPart(value = "files", required = false) List<MultipartFile> files) {
+        return fileService.parseValuesFromFileToDTO(files)
+                .thenApply(unused -> new ResponseEntity<>(HttpStatus.OK));
     }
 }

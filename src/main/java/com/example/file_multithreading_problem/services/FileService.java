@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,36 +20,30 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 
 @Service
 public class FileService {
     static final Logger log = LoggerFactory.getLogger(FileService.class);
-    public void parseValuesFromFileToDTO(List<MultipartFile> files) {
-        CompletableFuture<Void> filesDtoFromFile = CompletableFuture.runAsync(() ->
-        {
-            for(MultipartFile file : files) {
+    @Async
+    public CompletableFuture<Void> parseValuesFromFileToDTO(List<MultipartFile> files) {
+        try {
+            for (MultipartFile file : files) {
                 final Integer cellIndex = 0;
                 final Integer sheetIndex = 0;
                 final Integer limitValues = 100;
-                try {
-                    Set<String> emailsFromFile = parseCellValueByCellIndexAndSheetIndexWithLimitValues(cellIndex,
-                            sheetIndex,
-                            limitValues,
-                            file.getBytes());
-                    for (String email:emailsFromFile) {
-                        log.info(email);
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                Set<String> emailsFromFile = parseCellValueByCellIndexAndSheetIndexWithLimitValues(cellIndex,
+                        sheetIndex,
+                        limitValues,
+                        file.getBytes());
+                for (String email : emailsFromFile) {
+                    log.info(email);
                 }
             }
-
-        }, Executors.newSingleThreadExecutor()).exceptionally((e) -> {
+            return CompletableFuture.completedFuture(null);
+        } catch (IOException e) {
             log.error("Ошибка парсинга значений из файла(ов)", e);
-            return null;
-        });
-        filesDtoFromFile.thenRun(() -> log.info("Чтение данных из файла(ов) завершено"));
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     /***

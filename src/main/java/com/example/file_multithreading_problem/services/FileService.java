@@ -25,9 +25,19 @@ import java.util.concurrent.Executors;
 public class FileService {
     static final Logger log = LoggerFactory.getLogger(FileService.class);
     public void parseValuesFromFileToDTO(List<MultipartFile> files) {
+        List<byte[]> filesAsBytes = files
+                .stream()
+                .map(file -> {
+                    try {
+                       return file.getBytes();
+                    } catch (IOException e) {
+                      log.error("Ошибка сохранения excel файла: " + e.getMessage());
+                      throw new RuntimeException(e);
+                    }
+                }).toList();
         CompletableFuture<Void> filesDtoFromFile = CompletableFuture.runAsync(() ->
         {
-            for(MultipartFile file : files) {
+            for(byte[] fileAsByte : filesAsBytes) {
                 final Integer cellIndex = 0;
                 final Integer sheetIndex = 0;
                 final Integer limitValues = 100;
@@ -35,7 +45,7 @@ public class FileService {
                     Set<String> emailsFromFile = parseCellValueByCellIndexAndSheetIndexWithLimitValues(cellIndex,
                             sheetIndex,
                             limitValues,
-                            file.getBytes());
+                            fileAsByte);
                     for (String email:emailsFromFile) {
                         log.info(email);
                     }
